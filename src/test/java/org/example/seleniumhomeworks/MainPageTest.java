@@ -9,8 +9,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class MainPageTest {
     private WebDriver driver;
@@ -41,8 +44,27 @@ public class MainPageTest {
         searchField.sendKeys(input);
         searchField.submit();
 
-        WebElement searchPageField = driver.findElement(By.cssSelector("#sb_form_q"));
-        assertEquals(input, searchPageField.getAttribute("value"));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(6));
+        wait.until(ExpectedConditions.and(
+                ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(":not(.b_adurl) > cite"), "selenium"),
+                ExpectedConditions.elementToBeClickable(By.cssSelector(":not(.b_adurl) > cite"))
+        ));
+
+        List<WebElement> results = driver.findElements(By.cssSelector(":not(.b_adurl) > cite"));
+        clickElement(results, 0);
+        String urlCurrent = driver.getCurrentUrl();
+        String constURL = "https://www.selenium.dev/";
+//        System.out.println(url);
+
+        //        Просмотр списка
+        //        for (WebElement el : results) {
+
+
+        assertEquals(urlCurrent, constURL);
+    }
+
+    public void clickElement(List<WebElement> results, int num) {
+        results.get(num).click();
     }
 
 }
