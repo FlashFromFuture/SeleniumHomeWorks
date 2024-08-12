@@ -8,14 +8,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.ArrayList;
 
 public class BingSearchTest {
     private WebDriver driver;
@@ -47,12 +46,16 @@ public class BingSearchTest {
         mp.sendText(input);
 
         ResultPage rp = new ResultPage(driver);
-        rp.clickElement(0);
+
+        ArrayList tabs = new ArrayList<> (driver.getWindowHandles());
+        if (tabs.size() > 1) driver.switchTo().window(tabs.get(1).toString());
 
         wait.until(ExpectedConditions.and(
-                ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(":not(.b_adurl) > cite"), "Selenium"),
+                ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(":not(.b_adurl) > cite"), "selenium"),
                 ExpectedConditions.elementToBeClickable(By.cssSelector(":not(.b_adurl) > cite"))
         ));
+
+        rp.clickElement(0);
 
         assertEquals("https://www.selenium.dev/", driver.getCurrentUrl(), "Открылась неверная ссылка");
     }
